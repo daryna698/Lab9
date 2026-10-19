@@ -7,8 +7,25 @@
  * @returns {Filters}
  */
 export function readFilters() {
-  // TODO C3
-  return {};
+  const form = document.querySelector('#filters');
+  const query = form?.querySelector('[name="query"]');
+  const genre = form?.querySelector('[name="genre"]');
+  const mine = form?.querySelector('[name="mine"]');
+
+  if (
+    !(form instanceof HTMLFormElement) ||
+    !(query instanceof HTMLInputElement) ||
+    !(genre instanceof HTMLSelectElement) ||
+    !(mine instanceof HTMLInputElement)
+  ) {
+    throw new Error('Не знайдено поля фільтрів у формі #filters');
+  }
+
+  return {
+    query: query.value,
+    genre: genre.value,
+    mine: mine.checked,
+  };
 }
 
 /**
@@ -18,5 +35,25 @@ export function readFilters() {
  * @param {() => void} refresh перемальовує список для поточних фільтрів
  */
 export function initFilters(refresh) {
-  // TODO C3
+  const form = document.querySelector('#filters');
+  if (!(form instanceof HTMLFormElement)) {
+    throw new Error('Не знайдено форму #filters');
+  }
+
+  const query = form.querySelector('[name="query"]');
+  const genre = form.querySelector('[name="genre"]');
+  const mine = form.querySelector('[name="mine"]');
+  if (
+    !(query instanceof HTMLInputElement) ||
+    !(genre instanceof HTMLSelectElement) ||
+    !(mine instanceof HTMLInputElement)
+  ) {
+    throw new Error('Не знайдено поля фільтрів у формі #filters');
+  }
+
+  query.addEventListener('input', refresh);
+  genre.addEventListener('change', refresh);
+  mine.addEventListener('change', refresh);
+  form.addEventListener('submit', (event) => event.preventDefault());
+  form.addEventListener('reset', () => queueMicrotask(refresh));
 }
