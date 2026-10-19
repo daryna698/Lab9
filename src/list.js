@@ -22,35 +22,10 @@ export function initList(refresh) {
     if (!card || !Number.isSafeInteger(id)) return;
 
     if (button.dataset.action === 'details') {
-      const show = getShow(id);
-      const dialog = document.querySelector('#details');
-      const title = document.querySelector('#details-title');
-      const summary = document.querySelector('#details-summary');
-      const link = document.querySelector('#details-link');
-
-      if (
-        !(dialog instanceof HTMLDialogElement) ||
-        !(title instanceof HTMLElement) ||
-        !(summary instanceof HTMLElement) ||
-        !(link instanceof HTMLAnchorElement)
-      ) {
-        throw new Error('Не знайдено розмітку діалогу #details');
-      }
-
-      title.textContent = show.name;
-      const parsedSummary = new DOMParser().parseFromString(show.summary, 'text/html');
-      const paragraphs = [...parsedSummary.body.querySelectorAll('p')].map((source) => {
-        const paragraph = document.createElement('p');
-        paragraph.textContent = source.textContent;
-        return paragraph;
-      });
-      summary.replaceChildren(...paragraphs);
-      link.href = show.url;
-      if (!dialog.open) dialog.showModal();
+openDetails(id);
       return;
     }
-    if (button.dataset.action !== 'toggle') return;
-
+    if (button.dataset.action === 'toggle') {
     const oldCards = [...results.querySelectorAll('li[data-id]')];
     const oldIndex = oldCards.indexOf(card);
     toggle(id);
@@ -85,5 +60,6 @@ export function initList(refresh) {
     if (!(heading instanceof HTMLElement)) throw new Error('Не знайдено заголовок #results-heading');
     heading.tabIndex = -1;
     heading.focus();
+  }
   });
 }

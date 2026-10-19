@@ -1,5 +1,5 @@
 /** @typedef {import('./state.js').Show} Show */
-import { shows, watchlist } from './state.js';
+import { shows,watchlist } from './state.js';
 
 /**
  * C1. Показує серіали в списку #results — по картці з шаблону #show-card на кожен, у тому
@@ -22,6 +22,8 @@ export function renderShows(list) {
   for (const show of list) {
     const card = /** @type {HTMLElement} */ (templateCard.cloneNode(true));
     card.dataset.id = String(show.id);
+    const inWatchlist = watchlist.has(show.id);
+card.querySelector('[data-action="toggle"]').setAttribute('aria-pressed', String(inWatchlist));
 
     for (const name of card.querySelectorAll('[data-field="name"]')) {
       name.textContent = show.name;
@@ -32,13 +34,20 @@ export function renderShows(list) {
       : '—';
     card.querySelector('[data-field="rating"]').textContent = show.rating ?? '—';
 
-    for (const button of card.querySelectorAll('button[data-action]')) {
-      if (button.dataset.action === 'toggle') {
+    for (const button of card.querySelectorAll('button')) {
+
+      const text = button.textContent.trim();
+
+      if (text === 'До списку') {
+
         button.setAttribute('aria-label', `До списку: ${show.name}`);
-        button.setAttribute('aria-pressed', String(watchlist.has(show.id)));
-      } else if (button.dataset.action === 'details') {
+
+      } else if (text === 'Детальніше') {
+
         button.setAttribute('aria-label', `Детальніше про ${show.name}`);
+
       }
+
     }
 
     cards.append(card);
@@ -48,4 +57,5 @@ export function renderShows(list) {
   status.textContent = list.length
     ? `Знайдено: ${list.length} з ${shows.length}`
     : 'Нічого не знайдено';
-}
+
+} 
