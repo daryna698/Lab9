@@ -1,4 +1,5 @@
 import { getShow, toggle, watchlist } from './state.js';
+import { openDetails } from './details.js';
 
 /**
  * C2. Підключає кнопки карток у списку #results: «До списку» додає серіал до мого списку або
