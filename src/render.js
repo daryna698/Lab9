@@ -1,5 +1,5 @@
 /** @typedef {import('./state.js').Show} Show */
-import { shows } from './state.js';
+import { shows, watchlist } from './state.js';
 
 /**
  * C1. Показує серіали в списку #results — по картці з шаблону #show-card на кожен, у тому
@@ -32,20 +32,13 @@ export function renderShows(list) {
       : '—';
     card.querySelector('[data-field="rating"]').textContent = show.rating ?? '—';
 
-    for (const button of card.querySelectorAll('button')) {
-
-      const text = button.textContent.trim();
-
-      if (text === 'До списку') {
-
+    for (const button of card.querySelectorAll('button[data-action]')) {
+      if (button.dataset.action === 'toggle') {
         button.setAttribute('aria-label', `До списку: ${show.name}`);
-
-      } else if (text === 'Детальніше') {
-
+        button.setAttribute('aria-pressed', String(watchlist.has(show.id)));
+      } else if (button.dataset.action === 'details') {
         button.setAttribute('aria-label', `Детальніше про ${show.name}`);
-
       }
-
     }
 
     cards.append(card);
@@ -55,5 +48,4 @@ export function renderShows(list) {
   status.textContent = list.length
     ? `Знайдено: ${list.length} з ${shows.length}`
     : 'Нічого не знайдено';
-
-} 
+}
